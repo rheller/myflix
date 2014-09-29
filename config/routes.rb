@@ -2,6 +2,7 @@ Myflix::Application.routes.draw do
   get 'ui(/:action)', controller: 'ui'
   root 'pages#front'
   get 'register', to: 'users#new'
+  get 'register/:token', to: 'users#new_with_invitation_token', as: 'register_with_token'
   get 'sign_in', to: 'sessions#new'
   get 'sign_out', to: 'sessions#destroy'
   get 'my_queue', to: 'queue_items#index'
@@ -30,6 +31,7 @@ Myflix::Application.routes.draw do
   end
 
   resources :relationships, only: [:destroy, :create]
+  resources :invitations, only: [:new, :create]
 
   resources :categories, only: :show
 
@@ -47,7 +49,7 @@ Myflix::Application.routes.draw do
   get 'confirm_password', to: 'forgot_passwords#confirm'
 
   resources :password_resets, only: [:show, :create]
-  get 'invalid_token', to: 'password_resets#invalid_token'
 ####################################################
+  get 'invalid_token', to: 'pages#invalid_token'
 
 end

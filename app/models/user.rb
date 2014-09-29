@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  include Tokenable
   validates :email, presence: true, uniqueness: true
   validates :full_name, presence: true
   validates :password_digest, presence: true
@@ -10,11 +11,11 @@ class User < ActiveRecord::Base
   has_many :following_relationships, :class_name => "Relationship", :foreign_key => "follower_id"
   has_many :leaders, :through => :following_relationships
 
+  has_many :invitations, :foreign_key => "inviter_id"
+
 
 
   has_secure_password
-
-  before_create :generate_token
 
   def can_follow? leader
     !self.follows?(leader)  && (self != leader) 
@@ -24,16 +25,15 @@ class User < ActiveRecord::Base
     leaders.include?(leader)
   end
 
+  def follow leader
+    Relationship.create(leader: leader, follower: self) if can_follow?(leader)
+  end
+
   def normalize_positions
     queue_items.each_with_index do |q, i|
       # index starts at 0, position at 1
       q.update_attributes(position: i + 1)
     end
   end
-
-  def generate_token
-    self.token = SecureRandom::urlsafe_base64
-  end
-
 
 end

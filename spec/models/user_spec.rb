@@ -11,15 +11,30 @@ describe User do
   it { should have_many(:followers) }
   it { should have_many(:leading_relationships) }
   it { should have_many(:leaders) }
+  it { should have_many(:invitations) }
 
-
-  it "generates a random token when the user is created" do 
-      joe = Fabricate(:user)
-      expect(joe.token).to_not be_blank
+  it_behaves_like "is_tokenable" do
+    let(:record) {Fabricate(:user)}
   end
 
+  describe "#follow" do
 
-  describe "follows?" do
+    it "creates a following relationship" do
+      joe = Fabricate(:user)
+      hank = Fabricate(:user)
+      hank.follow(joe)
+      expect(hank.follows?(joe)).to be(true)
+    end
+
+    it "does not follow itself" do
+      joe = Fabricate(:user)
+      joe.follow(joe)
+      expect(joe.follows?(joe)).to be(false)
+    end
+
+  end
+
+  describe "#follows?" do
 
     it "identifies follower" do
       joe = Fabricate(:user)
