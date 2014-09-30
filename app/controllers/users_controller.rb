@@ -18,7 +18,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-       EmailOnNewUserWorker.perform_async(@user.id)
+    #   EmailOnNewUserWorker.perform_async(@user.id)
+       EmailOnNewUserWorker.perform_in(1.second, @user.id)
        handle_invitation
        redirect_to sign_in_path, notice: "You are signed up. Please log in"
      else

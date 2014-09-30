@@ -1,8 +1,9 @@
 class EmailInvitationWorker
   include Sidekiq::Worker
+  sidekiq_options retry: false
 
-  def perform(id)
-    invitation = Invitation.find(id)
-    AppMailer.invite(@invitation).deliver
+  def perform(invitation_id)
+    invitation = Invitation.find(invitation_id)
+    AppMailer.invite(invitation).deliver
   end
 end

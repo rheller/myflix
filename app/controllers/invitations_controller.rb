@@ -10,6 +10,7 @@ class InvitationsController < ApplicationController
     @invitation = Invitation.new(invitation_params.merge!(inviter_id: current_user.id) )
     if @invitation.save
       EmailInvitationWorker.perform_async(@invitation.id)
+#      EmailInvitationWorker.perform_in(1.second, @invitation.id)
       flash[:notice] = 'Invitation Sent'
       redirect_to new_invitation_path
     else
