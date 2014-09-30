@@ -9,7 +9,8 @@ class InvitationsController < ApplicationController
   def create
     @invitation = Invitation.new(invitation_params.merge!(inviter_id: current_user.id) )
     if @invitation.save
-      AppMailer.delay.invite(@invitation)
+      #AppMailer.delay.invite(@invitation)   #immediate
+      AppMailer.delay.invite(@invitation)    #background via sidekiq
       flash[:notice] = 'Invitation Sent'
       redirect_to new_invitation_path
     else
