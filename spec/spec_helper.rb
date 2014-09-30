@@ -6,6 +6,9 @@ require 'capybara/rails'
 require 'capybara/email/rspec'
 require 'shoulda/matchers'
 
+require 'sidekiq/testing'
+Sidekiq::Testing.inline! #send emails immediately
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
