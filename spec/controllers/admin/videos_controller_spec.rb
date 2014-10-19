@@ -10,10 +10,8 @@ describe Admin::VideosController do
       let(:action) {get :new}
     end
 
-    it "redirects with no admin access" do
-      set_current_user
-      get :new
-      expect(response).to redirect_to root_path
+    it_behaves_like "require_sign_in" do
+      let(:action) {get :new}
     end
 
     it "generates a new record" do
@@ -26,14 +24,39 @@ describe Admin::VideosController do
 
 
     describe 'POST create' do
-   
-      it "redirects with no admin access"
-      it "returns an error with invalid data"
 
-   #with valid data
+    it_behaves_like "require_sign_in" do
+      let(:action) {post :create }
+    end
+
+    it_behaves_like "require_admin" do
+      let(:action) {post :create }
+    end
+
+    context "with INvalid data" do
       before do
           set_current_admin
-          post :create, video: {title: "great one", description: "a farmers tale" }
+          post :create, video: {description: "a farmers tale" }
+      end
+      it "does not saves the record" do
+        Video.count.should == 0
+      end
+
+      it "renders the page" do
+        response.should render_template 'new'
+      end
+      it "sets the ERROR notice" do
+        flash[:error].should_not be_blank
+      end
+    end
+
+
+
+    context "with valid data" do
+      before do
+          set_current_admin
+          category = Fabricate(:category)
+          post :create, video: {title: "great one", description: "a farmers tale", category_id: category.id }
       end
 
       it "saves the record" do
@@ -41,12 +64,17 @@ describe Admin::VideosController do
       end
 
       it "redirects to video" do
-        response.should redirect_to root_path
+        response.should redirect_to new_admin_video_path
       end
 
       it "sets the notice" do
         flash[:notice].should_not be_blank
       end
+
+    end
+
+
+    
 
     end
 

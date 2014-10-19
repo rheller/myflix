@@ -6,6 +6,12 @@ class Video < ActiveRecord::Base
   validates :title, presence: true
   validates :description, presence: true
 
+  #rick ** railscast said to make attr_accessible of :content
+  #carrierwave file uploader
+  mount_uploader :content, VideoUploader
+  mount_uploader :large_cover, LargeCoverUploader
+  mount_uploader :small_cover, SmallCoverUploader
+
   def in_my_queue?(current_user)
     QueueItem.where(video_id: id, user_id: current_user.id).first.present?
   end

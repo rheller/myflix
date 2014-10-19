@@ -10,12 +10,19 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'bootstrap_form'
 gem 'bcrypt-ruby'
+
 gem 'fabrication'
 gem 'faker'
 gem 'sidekiq'
 gem 'unicorn'
-gem "sentry-raven"
-gem 'paratrooper'
+gem "sentry-raven" # for error monitoring
+
+gem 'paratrooper' #for deployment
+
+gem 'carrierwave' #for uploading
+gem 'fog' #for uploading to Amazon s3
+
+gem 'mini_magick'
 
 group :development do
   gem 'sqlite3'
