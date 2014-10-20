@@ -6,8 +6,9 @@ class VideoUploader < CarrierWave::Uploader::Base
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
+  # config for storage is in initializer file
   # storage :file
-  storage :fog #for Amazon s3
+  # storage :fog #for Amazon s3
 
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:

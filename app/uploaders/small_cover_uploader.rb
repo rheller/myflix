@@ -6,7 +6,8 @@ class SmallCoverUploader < CarrierWave::Uploader::Base
   # include CarrierWave::RMagick
   include CarrierWave::MiniMagick
 
-  storage :file
+  # config for storage is in initializer file
+  # storage :file
   # storage :fog #for Amazon s3
 
   # Override the directory where uploaded files will be stored.
