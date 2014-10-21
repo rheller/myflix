@@ -8,7 +8,6 @@
         - cat_videos = @videos.select{|v| v.category_id == catty.id} 
         - cat_videos.each do |video|
           %div{:style => "height: 200px; display: inline"}
-            -#.video.col-sm-2
             = link_to video, nil do
-              %img(src="/tmp/#{video.small_cover_url}")
+              %img(src="#{video.small_cover_url}")
 

@@ -120,6 +120,7 @@ end
     context "the user sign up is INVALID" do
 
       before do
+        ActionMailer::Base.deliveries.clear
         post :create, user: {email: "", password: "", full_name: ""}
       end
       after do
