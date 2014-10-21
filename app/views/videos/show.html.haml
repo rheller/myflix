@@ -2,7 +2,7 @@
   .container
     .row
       .video_large_cover.col-sm-7.col-sm-offset-1
-        %img(src="/tmp/monk_large.jpg")
+        %img(src="#{@video.large_cover_url}")
       .video_info.col-sm-3
         %header
           %h3 
@@ -12,6 +12,9 @@
         %p
         = @video.description
         .actions
+
+          - if @video.video_url.present?
+            %a.btn.btn-primary(href="#{@video.video_url}") Watch Now
           = link_to "+ My Queue", queue_items_path(video_id: @video.id), method: :post, class: 'btn btn-default' unless @video.in_my_queue?(current_user)
 
 %section.reviews.container
