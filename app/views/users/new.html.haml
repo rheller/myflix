@@ -6,7 +6,10 @@
           %h1 Register
         %fieldset
           = hidden_field_tag :invitation_token, @invitation.token unless @invitation.blank?
+          = hidden_field_tag :amount, 2000
           = f.email_field :email, label: "Email Address"
           = f.password_field :password
           = f.text_field :full_name, label: "Full Name"
-        = f.submit "Sign Up", class: "btn btn-default"
+        %fieldset.actions.control-group
+          .controls
+            %script(src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="#{ENV['STRIPE_PUBLISHABLE_KEY']}" data-name="Rick Myflix Demo" data-description="Rickflix membership ($9.99)" data-amount="999" data-currency="usd")
