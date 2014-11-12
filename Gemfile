@@ -11,11 +11,11 @@ gem 'jquery-rails'
 gem 'bootstrap_form'
 gem 'bcrypt-ruby'
 
-gem 'fabrication'
-gem 'faker'
 gem 'sidekiq'
 gem 'unicorn'
 gem "sentry-raven" # for error monitoring
+gem 'stripe' # for credit cards
+gem 'figaro' # for managing keys
 
 gem 'paratrooper' #for deployment
 
@@ -34,8 +34,10 @@ group :development do
 end
 
 group :development, :test do
-  gem 'pry'
   gem 'rspec-rails', '2.99'
+  gem 'fabrication'
+  gem 'faker'       
+  gem 'pry'
 end
 
 group :test do
