@@ -20,13 +20,14 @@ class UsersController < ApplicationController
     if @user.save
 
 # the token is just a link to the potential charge. This charges it.
-      charge = StripeWrapper::Charge.create(
+      response = StripeWrapper::Charge.create(
         :amount => params[:amount],
         :currency => "usd",
         :card => params[:stripeToken],
         :description => "RickFlix Charge"
         )
-      if  charge.successful?
+      logger.info response.inspect
+      if  response.is_a? Stripe::Charge
          AppMailer.notify_on_new(@user).deliver   #immediately
 
 #      background processing requires 
@@ -37,7 +38,7 @@ class UsersController < ApplicationController
          handle_invitation
          redirect_to sign_in_path, notice: "You are signed up. Please log in"
       else
-        flash[:error] = charge.error_message
+        flash[:error] = response
         render "new"
       end
     else
