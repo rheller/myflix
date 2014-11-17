@@ -27,8 +27,13 @@ class UsersController < ApplicationController
         :description => "RickFlix Charge"
         )
       if  charge.successful?
-         #AppMailer.notify_on_new(@user).deliver   #immediately
-         AppMailer.delay.notify_on_new(@user)      #background via sidekiq
+         AppMailer.notify_on_new(@user).deliver   #immediately
+
+#      background processing requires 
+#        redis-server /usr/local/etc/redis.conf
+#        foreman start
+#        http://localhost:5000/
+#         AppMailer.delay.notify_on_new(@user)      #background via sidekiq
          handle_invitation
          redirect_to sign_in_path, notice: "You are signed up. Please log in"
       else

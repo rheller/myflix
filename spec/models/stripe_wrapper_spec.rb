@@ -20,22 +20,17 @@ describe StripeWrapper do
       context "with valid credit card" do
         let(:card_number) {"4242 4242 4242 4242"}
         it "charges the card successfully", :vcr do
-          response = StripeWrapper::Charge.create( :amount => 100, :currency => "usd", :card => token, :description => "test ")
-  puts response.inspect
-          expect(response).to be_successful
+          response = StripeWrapper::Charge.create( :amount => 99, :currency => "usd", :card => token, :description => "test ")
+          expect(response.amount).to eq(99)
         end
       end
 
       context "with INvalid credit card" do
         let(:card_number) { "4000000000000069"} #expired card
-        let(:response) { StripeWrapper::Charge.create(:amount => 100, :currency => "usd", :card => token)  }
-
-        it "does NOT charge the card ", :vcr do
-          expect(response).to_not be_successful
-        end
+        let(:response) { StripeWrapper::Charge.create(:amount => 99, :currency => "usd", :card => token)  }
 
         it "returns an error message ", :vcr do
-          expect(response.error_message).to eq("Your card has expired.")
+          expect(response).to eq("Your card has expired.")
         end
       end
     end  
