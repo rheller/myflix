@@ -8,7 +8,7 @@ feature 'user invites friend' do
     clear_emails
   end
 
-  scenario 'user enters a valid email address' do
+  scenario 'user enters a valid email address', {js: true, vcr: true} do
     joe = Fabricate(:user)
 
     sign_in(joe)
@@ -45,6 +45,10 @@ feature 'user invites friend' do
     expect(page).to have_content 'Password'
     fill_in "Password", with: 'gonzo'
     fill_in "Full Name", with: "Jamie Smil"
+    fill_in "card_number", with: "4242 4242 4242 4242"
+    fill_in "cvc", with: "123"
+    fill_in "exp-month", with: "3"
+    fill_in "exp-year", with: "2017"
     click_button "Sign Up"
     expect(page).to have_content 'Sign In'
   end

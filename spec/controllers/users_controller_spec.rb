@@ -58,6 +58,9 @@ end
 
     context "the user sign up via an invitation is valid" do
 
+      before do
+        StripeWrapper::Charge.stub(:create).and_return(Stripe::Charge.new)
+      end
 
       it "creates a follower for the inviter" do
         invitation = Fabricate(:invitation, inviter: hank)
@@ -85,6 +88,7 @@ end
     context "the user sign up is valid" do
    
       before do
+        StripeWrapper::Charge.stub(:create).and_return(Stripe::Charge.new)
         post :create, user: Fabricate.attributes_for(:user)
       end
 

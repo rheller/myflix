@@ -17,7 +17,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.save
+    if @user.valid?
 
 # the token is just a link to the potential charge. This charges it.
       response = StripeWrapper::Charge.create(
@@ -26,8 +26,8 @@ class UsersController < ApplicationController
         :card => params[:stripeToken],
         :description => "RickFlix Charge"
         )
-      logger.info response.inspect
       if  response.is_a? Stripe::Charge
+         @user.save
          AppMailer.notify_on_new(@user).deliver   #immediately
 
 #      background processing requires 
