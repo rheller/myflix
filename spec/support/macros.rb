@@ -16,7 +16,10 @@ def current_user
   User.find(session[:user_id])
 end
 
-def sign_out
+def sign_out(full_name=nil)
+    if full_name.present?
+      click_link "Welcome, " + full_name
+    end
     click_link "Sign Out"
 end
 

@@ -13,13 +13,13 @@ feature 'user invites friend' do
 
     sign_in(joe)
     invite_a_friend(joe)
-    sign_out
+    sign_out(joe.full_name)
 
     friend_accepts_invite
     friend_signs_in    
     click_link('People')
     expect(page).to have_content joe.full_name
-    sign_out
+    sign_out("Jamie Smil")
 
     sign_in(joe)
     click_link('People')
@@ -42,6 +42,8 @@ feature 'user invites friend' do
   def friend_accepts_invite
     open_email('rick.heller@yahoo.com')
     current_email.click_link 'Register'
+puts "rick clicked on register "
+save_and_open_page
     expect(page).to have_content 'Password'
     fill_in "Password", with: 'gonzo'
     fill_in "Full Name", with: "Jamie Smil"
