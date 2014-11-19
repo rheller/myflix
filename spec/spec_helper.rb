@@ -10,6 +10,15 @@ require 'vcr'
 require 'sidekiq/testing'
 Sidekiq::Testing.inline! #send emails immediately
 
+
+
+# Selenium runs on a port other than  3000. 
+# When Capybara clicks on the link in your email, it is actually 
+# linked to your dev server. The dev server has a different database than 
+# your test server, so the invite token does not exist.
+# To fix, in spec_helper.rb, add
+Capybara.server_port = 52662
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end

@@ -42,8 +42,6 @@ feature 'user invites friend' do
   def friend_accepts_invite
     open_email('rick.heller@yahoo.com')
     current_email.click_link 'Register'
-puts "rick clicked on register "
-save_and_open_page
     expect(page).to have_content 'Password'
     fill_in "Password", with: 'gonzo'
     fill_in "Full Name", with: "Jamie Smil"
