@@ -26,7 +26,7 @@ class UsersController < ApplicationController
         :card => params[:stripeToken],
         :description => "RickFlix Charge"
         )
-      if  response.is_a? Stripe::Charge
+      if  response.successful?
          @user.save
          AppMailer.notify_on_new(@user).deliver   #immediately
 
@@ -38,7 +38,7 @@ class UsersController < ApplicationController
          handle_invitation
          redirect_to sign_in_path, notice: "You are signed up. Please log in"
       else
-        flash[:error] = response
+        flash[:error] = response.error_message
         render "new"
       end
     else

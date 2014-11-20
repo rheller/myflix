@@ -58,8 +58,9 @@ end
 
     context "the user sign up via an invitation is valid" do
 
+      let(:charge) {double('charge', successful?: true)}
       before do
-        StripeWrapper::Charge.stub(:create).and_return(Stripe::Charge.new)
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
       end
 
       it "creates a follower for the inviter" do
@@ -84,11 +85,32 @@ end
      
     end
 
- 
-    context "the user sign up is valid" do
-   
+    context "the user sign up is valid but the card is invalid" do
       before do
-        StripeWrapper::Charge.stub(:create).and_return(Stripe::Charge.new)
+        charge = double(:charge, successful?: false, error_message: "Your card was declined" )
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: "1232"
+      end
+
+      it "does NOT generate a user" do
+        User.count.should == 0
+      end
+      it "renders the new template" do
+        expect(response).to render_template :new
+      end
+      it "sets the error message" do
+        expect(flash[:error]).to be_present
+      end
+
+
+    end
+######################################################
+
+    context "the user sign up is valid and the card is valid" do
+   
+      let(:charge) {double('charge', successful?: true)}
+      before do
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
         post :create, user: Fabricate.attributes_for(:user)
       end
 
@@ -131,6 +153,9 @@ end
         ActionMailer::Base.deliveries.clear
       end
 
+      it "does NOT generate charge the card" do
+        StripeWrapper::Charge.should_not_receive(:create)
+      end
       it "renders redirect to sign_in" do
         response.should render_template :new
       end

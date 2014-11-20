@@ -39,8 +39,11 @@ private
 
 
     #wrap in transaction because positions are related to each other
+    #need to be a nested transaction for testing because of
+    #what database_cleaner does
+    #see http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
     begin
-      ActiveRecord::Base.transaction do
+      ActiveRecord::Base.transaction(requires_new: true) do
         qi.each do |q|
           queue_item = current_user.queue_items.select{|i| q[:id] == i.id.to_s}
           if queue_item.first.present?
