@@ -43,7 +43,7 @@ private
     #what database_cleaner does
     #see http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
     begin
-      ActiveRecord::Base.transaction(requires_new: true) do
+      ActiveRecord::Base.transaction do
         qi.each do |q|
           queue_item = current_user.queue_items.select{|i| q[:id] == i.id.to_s}
           if queue_item.first.present?
