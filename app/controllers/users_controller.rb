@@ -36,12 +36,13 @@ class UsersController < ApplicationController
 #        http://localhost:5000/
 #         AppMailer.delay.notify_on_new(@user)      #background via sidekiq
          handle_invitation
-         redirect_to sign_in_path, notice: "You are signed up. Please log in"
+         redirect_to sign_in_path, notice: "Thank you for registering. Please sign in."
       else
         flash[:error] = response.error_message
         render "new"
       end
     else
+      flash[:error] = "The user information looks invalid."
       render "new"
     end
   end
