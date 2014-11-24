@@ -23,6 +23,7 @@ gem 'carrierwave' #for uploading
 gem 'fog' #for uploading to Amazon s3
 
 gem 'mini_magick'
+gem 'draper' #for decorators
 
 group :development do
   gem 'sqlite3'
