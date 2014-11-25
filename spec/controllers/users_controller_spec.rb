@@ -55,57 +55,6 @@ end
 #######################################################
   describe 'POST create' do
 
-
-    context "the user sign up via an invitation is valid" do
-
-      let(:charge) {double('charge', successful?: true)}
-      before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-      end
-
-      it "creates a follower for the inviter" do
-        invitation = Fabricate(:invitation, inviter: hank)
-        post :create, user: Fabricate.attributes_for(:user), invitation_token: invitation.token
-        expect(hank.followers.count).to eq(1)
-      end
-      it "creates a follower for the invitee" do
-        invitation = Fabricate(:invitation, inviter: hank)
-        post :create, user: Fabricate.attributes_for(:user), invitation_token: invitation.token
-        expect(hank.leaders.count).to eq(1)
-      end
-
-      it "expires the invitation token" do
-        invitation = Fabricate(:invitation, inviter: hank)
-        old_token = invitation.token
-        post :create, user: Fabricate.attributes_for(:user), invitation_token: invitation.token
-        expect(invitation.reload.token).to_not eq(old_token)
-      end
-
-
-     
-    end
-
-    context "the user sign up is valid but the card is invalid" do
-      before do
-        charge = double(:charge, successful?: false, error_message: "Your card was declined" )
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-        post :create, user: Fabricate.attributes_for(:user), stripeToken: "1232"
-      end
-
-      it "does NOT generate a user" do
-        User.count.should == 0
-      end
-      it "renders the new template" do
-        expect(response).to render_template :new
-      end
-      it "sets the error message" do
-        expect(flash[:error]).to be_present
-      end
-
-
-    end
-######################################################
-
     context "successful user sign up" do
    
       it "redirects to sign_in" do

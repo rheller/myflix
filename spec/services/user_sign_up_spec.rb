@@ -2,6 +2,48 @@ require 'spec_helper'
 
 describe UserSignUp do
   describe '#sign_up' do
+
+    context "the user sign up via an invitation is valid" do
+
+      let(:hank)  { Fabricate(:user) }
+      let(:charge) {double('charge', successful?: true)}
+      before do
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+      end
+
+      it "creates a follower for the inviter" do
+        invitation = Fabricate(:invitation, inviter: hank)
+        UserSignUp.new(Fabricate.build(:user)).sign_up({invitation_token: invitation.token})
+        expect(hank.followers.count).to eq(1)
+      end
+      it "creates a follower for the invitee" do
+        invitation = Fabricate(:invitation, inviter: hank)
+        UserSignUp.new(Fabricate.build(:user)).sign_up({invitation_token: invitation.token})
+        expect(hank.leaders.count).to eq(1)
+      end
+
+      it "expires the invitation token" do
+        invitation = Fabricate(:invitation, inviter: hank)
+        old_token = invitation.token
+        UserSignUp.new(Fabricate.build(:user)).sign_up({invitation_token: invitation.token})
+        expect(invitation.reload.token).to_not eq(old_token)
+      end     
+    end
+
+    context "the user sign up is valid but the card is invalid" do
+      let(:charge) {double('charge', successful?: false, error_message: "Your card was declined" )}
+      before do
+        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        UserSignUp.new(Fabricate.build(:user)).sign_up({amount: 3, stripeToken: "something"})
+      end
+
+      it "does NOT generate a user" do
+        User.count.should == 0
+      end
+
+    end
+
+
     context "the user sign up is valid and the card is valid" do
    
       let(:charge) {double('charge', successful?: true)}
