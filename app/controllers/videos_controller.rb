@@ -7,7 +7,7 @@ class VideosController < ApplicationController
   end
 
   def show
-    @video = Video.find_by_id(params[:id])
+    @video = VideoDecorator.decorate(Video.find_by_id(params[:id]))
     @review = Review.new #for form
     @queue_item = QueueItem.new #for form
     @reviews = @video.reviews

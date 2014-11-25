@@ -15,5 +15,8 @@
 /tmp
 /public/uploads/
 
+# Ignore vcr temporary storage
+/spec/cassettes
+
 # Ignore application configuration
 /config/application.yml

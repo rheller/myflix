@@ -39,6 +39,9 @@ private
 
 
     #wrap in transaction because positions are related to each other
+    #need to be a nested transaction for testing because of
+    #what database_cleaner does
+    #see http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html
     begin
       ActiveRecord::Base.transaction do
         qi.each do |q|

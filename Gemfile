@@ -23,6 +23,7 @@ gem 'carrierwave' #for uploading
 gem 'fog' #for uploading to Amazon s3
 
 gem 'mini_magick'
+gem 'draper' #for decorators
 
 group :development do
   gem 'sqlite3'
@@ -46,6 +47,9 @@ group :test do
   gem 'capybara'
   gem 'capybara-email'
   gem 'launchy'
+  gem 'selenium-webdriver'
+  gem 'vcr'
+  gem 'webmock'
 end
 
 group :production do
