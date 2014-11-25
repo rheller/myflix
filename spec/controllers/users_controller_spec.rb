@@ -106,68 +106,32 @@ end
     end
 ######################################################
 
-    context "the user sign up is valid and the card is valid" do
+    context "successful user sign up" do
    
-      let(:charge) {double('charge', successful?: true)}
-      before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
-        post :create, user: Fabricate.attributes_for(:user)
-      end
-
-      after do
-        #unlike the test database, RSpec does not automatically clear the mail queue
-        ActionMailer::Base.deliveries.clear
-      end
-
-
-      it "generates a user from valid data" do
-        User.count.should == 1
-      end
-
       it "redirects to sign_in" do
+        result = double(:sign_up_result, successful?: true)
+        UserSignUp.any_instance.should_receive(:sign_up).and_return(result)
+        post :create, user: Fabricate.attributes_for(:user)
         response.should redirect_to sign_in_path
-      end
-
-      it "sends a welcome email " do
-        expect(ActionMailer::Base.deliveries).to_not be_empty
-      end
-      
-      it "checks if the email is addressed to the right person" do
-        expect(ActionMailer::Base.deliveries.last.to).to eq(["rick.heller@yahoo.com"])
-      end
-
-      it "has the correct content" do
-        expect(ActionMailer::Base.deliveries.last.body).to include("Welcome")
       end
 
     end
 
-
     context "the user sign up is INVALID" do
-
-      before do
-        ActionMailer::Base.deliveries.clear
-        post :create, user: {email: "", password: "", full_name: ""}
-      end
-      after do
-        ActionMailer::Base.deliveries.clear
+      it "rerenders the new template" do
+        result = double(:sign_up_result, successful?: false, error_message: "It failed")
+        UserSignUp.any_instance.should_receive(:sign_up).and_return(result)
+        post :create, user: Fabricate.attributes_for(:user)
+        expect(response).to render_template 'new'
       end
 
-      it "does NOT generate charge the card" do
-        StripeWrapper::Charge.should_not_receive(:create)
+      it "sets the flash message" do
+        result = double(:sign_up_result, successful?: false, error_message: "It failed")
+        UserSignUp.any_instance.should_receive(:sign_up).and_return(result)
+        post :create, user: Fabricate.attributes_for(:user)
+        expect(flash[:error]).to eq("It failed")
       end
-      it "renders redirect to sign_in" do
-        response.should render_template :new
-      end
-      it "does NOT generate a user" do
-        User.count.should == 0
-      end
-      it "DOES NOT send a welcome email " do
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
-      it "regenerates a user record for another try" do
-        assigns(:user).should be_instance_of(User)
-      end
+
     end
 
   end
