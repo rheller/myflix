@@ -7,7 +7,7 @@ module StripeWrapper
         response = Stripe::Customer.create(
           :plan => options[:plan],
           :card => options[:card],
-          :email => options[:email]
+          :email => options[:user].email
           )
         new(response: response)   #class method returns instance object
       rescue Stripe::CardError => e

@@ -11,7 +11,7 @@ class UserSignUp
       response = StripeWrapper::Customer.create(
         :card => params[:stripeToken],
         :plan => "ricktestplan",
-        :email => params[:email]
+        :user => user
         )
       if response.successful?
          user.save
