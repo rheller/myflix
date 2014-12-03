@@ -8,11 +8,10 @@ class UserSignUp
 
   def sign_up(params)
     if user.valid?
-      response = StripeWrapper::Charge.create(
-        :amount => params[:amount],
-        :currency => "usd",
+      response = StripeWrapper::Customer.create(
         :card => params[:stripeToken],
-        :description => "RickFlix Charge"
+        :plan => "ricktestplan",
+        :email => params[:email]
         )
       if response.successful?
          user.save

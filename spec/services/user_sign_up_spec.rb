@@ -6,9 +6,9 @@ describe UserSignUp do
     context "the user sign up via an invitation is valid" do
 
       let(:hank)  { Fabricate(:user) }
-      let(:charge) {double('charge', successful?: true)}
+      let(:customer) {double('customer', successful?: true)}
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(customer)
       end
 
       it "creates a follower for the inviter" do
@@ -33,7 +33,7 @@ describe UserSignUp do
     context "the user sign up is valid but the card is invalid" do
       let(:charge) {double('charge', successful?: false, error_message: "Your card was declined" )}
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(charge)
         UserSignUp.new(Fabricate.build(:user)).sign_up({amount: 3, stripeToken: "something"})
       end
 
@@ -49,7 +49,7 @@ describe UserSignUp do
       let(:charge) {double('charge', successful?: true)}
 
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(charge)
         UserSignUp.new(Fabricate.build(:user)).sign_up({amount: 3, stripeToken: "something"})
       end
 
@@ -86,7 +86,7 @@ describe UserSignUp do
       end
 
       it "does NOT generate charge the card" do
-        StripeWrapper::Charge.should_not_receive(:create)
+        StripeWrapper::Customer.should_not_receive(:create)
       end
       it "does NOT generate a user" do
         User.count.should == 0
