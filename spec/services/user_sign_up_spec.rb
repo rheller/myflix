@@ -6,7 +6,7 @@ describe UserSignUp do
     context "the user sign up via an invitation is valid" do
 
       let(:hank)  { Fabricate(:user) }
-      let(:customer) {double('customer', successful?: true)}
+      let(:customer) {double('customer', successful?: true, customer_token: "pdq")}
       before do
         StripeWrapper::Customer.should_receive(:create).and_return(customer)
       end
@@ -46,7 +46,7 @@ describe UserSignUp do
 
     context "the user sign up is valid and the card is valid" do
    
-      let(:customer) {double('customer', successful?: true)}
+      let(:customer) {double('customer', successful?: true, customer_token: "xyz")}
 
       before do
         StripeWrapper::Customer.should_receive(:create).and_return(customer)
@@ -61,6 +61,11 @@ describe UserSignUp do
       it "generates a user from valid data" do
         User.count.should == 1
       end
+      
+      it "stored the customer token from stripe" do
+        User.first.customer_token.should == "xyz"
+      end
+
 
       it "sends a welcome email " do
         expect(ActionMailer::Base.deliveries).to_not be_empty

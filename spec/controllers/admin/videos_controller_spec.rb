@@ -10,10 +10,6 @@ describe Admin::VideosController do
       let(:action) {get :new}
     end
 
-    it_behaves_like "require_sign_in" do
-      let(:action) {get :new}
-    end
-
     it "generates a new record" do
       set_current_user
       set_current_admin

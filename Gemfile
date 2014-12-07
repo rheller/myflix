@@ -15,6 +15,7 @@ gem 'sidekiq'
 gem 'unicorn'
 gem "sentry-raven" # for error monitoring
 gem 'stripe' # for credit cards
+gem 'stripe_event' # for credit card payment verification
 gem 'figaro' # for managing keys
 
 gem 'paratrooper' #for deployment

@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_many :leaders, :through => :following_relationships
 
   has_many :invitations, :foreign_key => "inviter_id"
-
+  has_many :payments
 
 
   has_secure_password

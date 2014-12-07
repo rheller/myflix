@@ -1,7 +1,7 @@
 module StripeWrapper
 
   class Customer
-    attr_reader :error_message, :response  #gets the instance vars
+    attr_reader :error_message, :response, :customer_token  #gets the instance vars
     def self.create(options={})
       begin
         response = Stripe::Customer.create(
@@ -21,6 +21,9 @@ module StripeWrapper
     end
     def successful?
       response.present?
+    end
+    def customer_token
+      response.id
     end
   end
 

@@ -12,6 +12,7 @@ describe User do
   it { should have_many(:leading_relationships) }
   it { should have_many(:leaders) }
   it { should have_many(:invitations) }
+  it { should have_many(:payments) }
 
   it_behaves_like "is_tokenable" do
     let(:record) {Fabricate(:user)}

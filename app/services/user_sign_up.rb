@@ -14,6 +14,7 @@ class UserSignUp
         :user => user
         )
       if response.successful?
+         user.customer_token = response.customer_token
          user.save
          AppMailer.notify_on_new(user).deliver   #immediately
 
