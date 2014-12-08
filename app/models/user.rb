@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   has_many :leaders, :through => :following_relationships
 
   has_many :invitations, :foreign_key => "inviter_id"
-
+  has_many :payments
 
 
   has_secure_password
@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
 
   def follow leader
     Relationship.create(leader: leader, follower: self) if can_follow?(leader)
+  end
+
+  def lock!
+    update_attribute(:locked, true)
   end
 
   def normalize_positions

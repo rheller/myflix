@@ -8,13 +8,13 @@ class UserSignUp
 
   def sign_up(params)
     if user.valid?
-      response = StripeWrapper::Charge.create(
-        :amount => params[:amount],
-        :currency => "usd",
+      response = StripeWrapper::Customer.create(
         :card => params[:stripeToken],
-        :description => "RickFlix Charge"
+        :plan => "ricktestplan",
+        :user => user
         )
       if response.successful?
+         user.customer_token = response.customer_token
          user.save
          AppMailer.notify_on_new(user).deliver   #immediately
 

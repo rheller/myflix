@@ -4,6 +4,7 @@ Myflix::Application.routes.draw do
 
   namespace :admin do
     resources :videos, only: [:new, :create]
+    resources :payments, only: [:index, :create]
   end
 
   get 'register', to: 'users#new'
@@ -56,5 +57,7 @@ Myflix::Application.routes.draw do
   resources :password_resets, only: [:show, :create]
 ####################################################
   get 'invalid_token', to: 'pages#invalid_token'
+
+  mount StripeEvent::Engine => '/stripe_events'
 
 end

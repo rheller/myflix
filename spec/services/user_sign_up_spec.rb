@@ -6,9 +6,9 @@ describe UserSignUp do
     context "the user sign up via an invitation is valid" do
 
       let(:hank)  { Fabricate(:user) }
-      let(:charge) {double('charge', successful?: true)}
+      let(:customer) {double('customer', successful?: true, customer_token: "pdq")}
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(customer)
       end
 
       it "creates a follower for the inviter" do
@@ -31,9 +31,9 @@ describe UserSignUp do
     end
 
     context "the user sign up is valid but the card is invalid" do
-      let(:charge) {double('charge', successful?: false, error_message: "Your card was declined" )}
+      let(:customer) {double('customer', successful?: false, error_message: "Your card was declined" )}
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(customer)
         UserSignUp.new(Fabricate.build(:user)).sign_up({amount: 3, stripeToken: "something"})
       end
 
@@ -46,10 +46,10 @@ describe UserSignUp do
 
     context "the user sign up is valid and the card is valid" do
    
-      let(:charge) {double('charge', successful?: true)}
+      let(:customer) {double('customer', successful?: true, customer_token: "xyz")}
 
       before do
-        StripeWrapper::Charge.should_receive(:create).and_return(charge)
+        StripeWrapper::Customer.should_receive(:create).and_return(customer)
         UserSignUp.new(Fabricate.build(:user)).sign_up({amount: 3, stripeToken: "something"})
       end
 
@@ -61,6 +61,11 @@ describe UserSignUp do
       it "generates a user from valid data" do
         User.count.should == 1
       end
+      
+      it "stored the customer token from stripe" do
+        User.first.customer_token.should == "xyz"
+      end
+
 
       it "sends a welcome email " do
         expect(ActionMailer::Base.deliveries).to_not be_empty
@@ -85,8 +90,8 @@ describe UserSignUp do
         ActionMailer::Base.deliveries.clear
       end
 
-      it "does NOT generate charge the card" do
-        StripeWrapper::Charge.should_not_receive(:create)
+      it "does NOT create a subscription" do
+        StripeWrapper::Customer.should_not_receive(:create)
       end
       it "does NOT generate a user" do
         User.count.should == 0
