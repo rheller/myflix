@@ -9,4 +9,12 @@ StripeEvent.configure do |events|
     Payment.create(user: user, amount: amount, reference_id: reference_id) 
   end
 
+  events.subscribe 'charge.failed' do |event|
+    #event JSON can be retrieved by . for each level
+    user = User.where(customer_token: event.data.object.customer).first
+    user.lock! unless user.blank?
+    AppMailer.notify_on_locked(user).deliver   #immediately
+
+  end
+
 end

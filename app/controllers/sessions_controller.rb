@@ -7,8 +7,13 @@ class SessionsController < ApplicationController
   def create
     @user = User.find_by_email(params[:email])
     if @user.present? && @user.authenticate(params[:password])
-      session[:user_id] = @user.id
-      redirect_to home_path, notice: "You are signed in"
+      if @user.locked 
+        flash[:error] = "Your account is locked. Please contact customer service."
+        redirect_to sign_in_path
+      else
+        session[:user_id] = @user.id
+        redirect_to home_path, notice: "You are signed in"
+      end
     else
       flash[:error] = "Invalid email or password"
       redirect_to sign_in_path

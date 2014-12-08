@@ -10,6 +10,11 @@ class AppMailer < ActionMailer::Base
     mail from: 'info@myflix.com', to: find_address(@user.email), subject: "Welcome to RickMyflix" 
   end
 
+  def notify_on_locked(user)
+    @user = user
+    mail from: 'info@myflix.com', to: find_address(@user.email), subject: "Hey, You Owe Us Money" 
+  end
+
   def invite(invitation)
     @invitation = invitation
     mail from: 'info@myflix.com', to: find_address(@invitation.recipient_email), subject: "Check out RickMyflix" 

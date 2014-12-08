@@ -18,6 +18,14 @@ describe User do
     let(:record) {Fabricate(:user)}
   end
 
+  describe "#lock!" do
+    it "sets the locked flag" do
+      joe = Fabricate(:user)
+      joe.lock!
+      expect(joe.locked).to be(true)
+    end
+  end
+
   describe "#follow" do
 
     it "creates a following relationship" do

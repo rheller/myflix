@@ -9,6 +9,16 @@ feature 'user signs in' do
     expect(page).to have_content "Welcome, " + rick.full_name
   end
 
+  scenario 'with existing username to locked account' do
+    rick = Fabricate(:user, locked: true)
+    sign_in(rick)
+    expect(page).to_not have_content "Welcome, " + rick.full_name
+    expect(page).to have_content "Sign In"
+  end
+
+
+
+
 scenario 'with INVALID username' do
     @rick = Fabricate(:user)
     visit sign_in_path
