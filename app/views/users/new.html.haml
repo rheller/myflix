@@ -13,9 +13,3 @@
           = hidden_field_tag :amount, 1999
           = render 'credit_card'
         = f.submit "Sign Up", class: "btn btn-default"
-
--# Caution: if I add require_tree in application.js file, 
--# it will include this twice and have weird interactions
--# e.g. a successful charge will still give a failure message 
--# see http://guides.rubyonrails.org/asset_pipeline.html
-= javascript_include_tag 'payment'
